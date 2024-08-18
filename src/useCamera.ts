@@ -4,7 +4,7 @@ import { mat3 } from "gl-matrix";
 export interface Camera {
   viewMatrix: mat3;
   pan: (dx: number, dy: number) => void;
-  zoom: (factor: number) => void;
+  zoom: (factor: number, mouseX: number, mouseY: number) => void;
 }
 
 function useCamera(): Camera {
@@ -19,11 +19,15 @@ function useCamera(): Camera {
     });
   };
 
-  const zoom = (factor: number) => {
+  const zoom = (factor: number, mouseX: number, mouseY: number) => {
     setViewMatrix((old) => {
       const result = mat3.create();
+      const T = mat3.fromTranslation(mat3.create(), [mouseX, mouseY]);
       const S = mat3.fromScaling(mat3.create(), [factor, factor]);
-      mat3.multiply(result, S, old);
+      const TINV = mat3.invert(mat3.create(), T);
+      mat3.multiply(result, TINV, old);
+      mat3.multiply(result, S, result);
+      mat3.multiply(result, T, result);
       return result;
     });
   };

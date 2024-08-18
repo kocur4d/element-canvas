@@ -37,8 +37,10 @@ const App: React.FC = () => {
   };
 
   const handleWheel = (e: React.WheelEvent) => {
+    const mouseX = e.pageX;
+    const mouseY = e.pageY;
     const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
-    zoom(zoomFactor);
+    zoom(zoomFactor, mouseX, mouseY);
   };
 
   return (
